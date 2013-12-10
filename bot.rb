@@ -5,9 +5,8 @@ LAST_DATE_OF_2013 = DateTime.new(2013, 12, 27)
 
 def last_businnes_dates_to(last_date)
   last_date += 1
-  (DateTime.now...last_date).map { |date|
-    DateTime.new(date.year, date.month, date.day)
-  }.reject { |date|
+  (DateTime.now...last_date).reject { |date|
+    date = DateTime.new(date.year, date.month, date.day)
     date.wday == 0 || date.wday == 6 || date.national_holiday?
   }.size
 end
