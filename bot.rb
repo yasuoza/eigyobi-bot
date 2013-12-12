@@ -3,12 +3,15 @@ require 'holiday_japan'
 
 LAST_DATE_OF_2013 = DateTime.new(2013, 12, 27)
 
+class Date
+  def holiday?
+    self.saturday? || self.sunday? || self.national_holiday?
+  end
+end
+
 def last_businnes_dates_to(last_date)
   last_date += 1
-  (DateTime.now...last_date).reject { |date|
-    date = DateTime.new(date.year, date.month, date.day)
-    date.wday == 0 || date.wday == 6 || date.national_holiday?
-  }.size
+  (Date.today...last_date).reject { |date| date.holiday? }.size
 end
 
 def last_businnes_dates
@@ -26,8 +29,15 @@ def tweet(text)
   client.update(text)
 end
 
-text = <<-TEXT
+def text
+  <<-TEXT
 今年も今日を入れて、あとのこり#{last_businnes_dates}営業日! #営業日bot
-TEXT
+  TEXT
+end
 
-tweet(text.strip)
+
+def main
+  tweet(text.strip) unless Date.today.holiday?
+end
+
+main
